@@ -1,0 +1,66 @@
+name: Script Workflow (Lint, Security, Test, Env)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    env:
+      REQUIRED_VAR: "workflow_value"
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck linter
+        run: shellcheck scripts/my-script.sh
+
+      - name: Ensure script is executable
+        run: chmod +x scripts/my-script.sh
+
+      - name: Show test message
+        run: echo "Running simple test assertion..."
+
+      - name: Execute test script
+        run: ./scripts/my-script.sh
+
+  package-and-deploy:
+    name: Package and Upload Artifact
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Install ZIP utility
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip
+
+      - name: Create deployable ZIP archive
+        run: zip -r workflow_script_package.zip scripts/
+
+      - name: Upload ZIP as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: script-artifact
+          path: workflow_script_package.zip
