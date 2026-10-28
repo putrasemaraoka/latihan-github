@@ -37,8 +37,8 @@ jobs:
         run: echo "Running simple test assertion..."
 
       - name: Execute test script
-        run: ./scripts/*.sh
-
+        run: ./scripts/my-sricpt.sh | ./scripts/newscript.sh
+      
   package-and-deploy:
     name: Package and Upload Artifact
     needs: build-and-test
