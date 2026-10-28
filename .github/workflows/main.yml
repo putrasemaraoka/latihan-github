@@ -28,16 +28,16 @@ jobs:
           sudo apt-get install -y shellcheck
 
       - name: Run ShellCheck linter
-        run: shellcheck scripts/my-script.sh
+        run: shellcheck scripts/*.sh
 
       - name: Ensure script is executable
-        run: chmod +x scripts/my-script.sh
+        run: chmod +x scripts/*.sh
 
       - name: Show test message
         run: echo "Running simple test assertion..."
 
       - name: Execute test script
-        run: ./scripts/my-script.sh
+        run: ./scripts/*.sh
 
   package-and-deploy:
     name: Package and Upload Artifact
